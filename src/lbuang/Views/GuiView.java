@@ -15,27 +15,29 @@ import java.awt.event.ActionListener;
 public class GuiView extends JFrame {
     private String player;
     private String artifact;
-    private String heroData;
-    private String[] check = null;
+    private String heroInformation;
+    private String[] inspect = null;
     private int type;
     private static final long serialVersionUID = 42L;
-    private final JFrame welcomeFrame = new JFrame("Player Creation");
+    private final JFrame WelcomeFrame = new JFrame("Player Creation");
     private final JFrame PlayerFrame = new JFrame("Let The Games Begin...\n\n---Swingy---");
-    private final JFrame createFrame = new JFrame("Create Your SuperHero");
-    private final JFrame selectFrame = new JFrame("Select Your SuperHero");
+    private final JFrame createHeroFrame = new JFrame("Create Your SuperHero");
+    private final JFrame pickHeroFrame = new JFrame("Select Your SuperHero");
     private final JFrame statsFrame = new JFrame("Hero Stats");
     private final JFrame gameFrame = new JFrame("Game In Progress Player");
     private static JFrame gameOverFrame = new JFrame("The Game Is Complete");
     private final JRadioButton spiderman = new JRadioButton("SPIDERMAN ✄");
     private final JRadioButton blackpanther = new JRadioButton("BLACKPANTHER ✄");
     private final JRadioButton batman = new JRadioButton("BATMAN ✄");
-    private final String[] items = ReadTXT.ReadLine();
-    private final JList heroList = new JList<>(items);
+    private final String[] objects = ReadTXT.ReadLine();
+    private final JList heroList = new JList<>(objects);
     private JLabel label;
     private JLabel label1;
-    private JTextField playerName;
-    private JTextArea area;
-    private JButton welcomeButton, createPlayer, selectPlayer;
+    private JTextField playerIdentification;
+    private JTextArea txtArea;
+    private JButton welcomeButton;
+    private JButton generatePlayer;
+    private JButton pickPlayer;
     private Hero hero = new Hero();
     private GuiController map;
     private Font font = new Font("Time New Roman", Font.PLAIN, 40);
@@ -45,7 +47,7 @@ public class GuiView extends JFrame {
     }
 
     // Second Display
-    public void createFrame(){
+    public void createHeroFrame(){
         label = new JLabel("PLAYER");
         label.setBounds(200,190, 200,30);
         label.setFont(font);
@@ -56,45 +58,45 @@ public class GuiView extends JFrame {
         label1.setBackground(Color.black);
         label1.setForeground(Color.green);
 
-        playerName = new JTextField();
-        playerName.setBounds(200, 280, 200, 30);
-        playerName.setBackground(Color.gray);
-        playerName.setCaretColor(Color.red);
+        playerIdentification = new JTextField();
+        playerIdentification.setBounds(200, 280, 200, 30);
+        playerIdentification.setBackground(Color.gray);
+        playerIdentification.setCaretColor(Color.red);
 
         welcomeButton = new JButton("ENTER");
         welcomeButton.setBounds(200, 320, 200, 30);
         welcomeButton.setBackground(Color.green);
 
-        welcomeFrame.add(label);
-        welcomeFrame.setBackground(Color.red);
-        welcomeFrame.add(label1);
-        welcomeFrame.add(playerName);
-        welcomeFrame.add(welcomeButton);
-        welcomeFrame.setSize(600,600);
-        welcomeFrame.getContentPane().setBackground(Color.yellow);
-        welcomeFrame.setLocationRelativeTo(null);
-        welcomeFrame.setLayout(null);
-        welcomeFrame.setVisible(true);
-        welcomeFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        WelcomeFrame.add(label);
+        WelcomeFrame.setBackground(Color.red);
+        WelcomeFrame.add(label1);
+        WelcomeFrame.add(playerIdentification);
+        WelcomeFrame.add(welcomeButton);
+        WelcomeFrame.setSize(600,600);
+        WelcomeFrame.getContentPane().setBackground(Color.yellow);
+        WelcomeFrame.setLocationRelativeTo(null);
+        WelcomeFrame.setLayout(null);
+        WelcomeFrame.setVisible(true);
+        WelcomeFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         welcomeButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                player = playerName.getText();
+                player = playerIdentification.getText();
                 player = player.trim();
 
                 if (player.length() > 0){
-                    check = player.split("\\s");
+                    inspect = player.split("\\s");
 
-                    if (check != null)
-                        player = String.join("_", check);
+                    if (inspect != null)
+                        player = String.join("_", inspect);
 
                     if (player.isEmpty())
                         JOptionPane.showMessageDialog(null, "Name cannot be empty or null!");
                     else{
-                        createPlayer();
-                        welcomeFrame.setVisible(false);
-                        welcomeFrame.dispose();
+                        generatePlayer();
+                        WelcomeFrame.setVisible(false);
+                        WelcomeFrame.dispose();
                     }
                 }
                 else
@@ -106,15 +108,14 @@ public class GuiView extends JFrame {
 
     //First Display
     public void welcomeToGui(){
-        createPlayer = new JButton("Create Player");
-        createPlayer.setBackground(Color.red);
-        createPlayer.setBounds(210,240, 200,30);
-        selectPlayer = new JButton("Select Player");
-        selectPlayer.setBackground(Color.black);
-        //selectPlayer.setBackground(Color.LIGHT_GRAY);
-        selectPlayer.setBounds(210,280, 200,30);
-        PlayerFrame.add(createPlayer);
-        PlayerFrame.add(selectPlayer);
+        generatePlayer = new JButton("Create Player");
+        generatePlayer.setBackground(Color.red);
+        generatePlayer.setBounds(210,240, 200,30);
+        pickPlayer = new JButton("Select Player");
+        pickPlayer.setBackground(Color.black);
+        pickPlayer.setBounds(210,280, 200,30);
+        PlayerFrame.add(generatePlayer);
+        PlayerFrame.add(pickPlayer);
         PlayerFrame.setSize(600,600);
         PlayerFrame.setLocationRelativeTo(null);
         PlayerFrame.setLayout(null);
@@ -122,25 +123,25 @@ public class GuiView extends JFrame {
         PlayerFrame.getContentPane().setBackground(Color.LIGHT_GRAY);
         PlayerFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        createPlayer.addActionListener(new ActionListener(){
+        generatePlayer.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                createFrame();
+                createHeroFrame();
                 PlayerFrame.dispose();
             }
         });
 
-        selectPlayer.addActionListener(new ActionListener(){
+        pickPlayer.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                selectPlayer();
+                pickPlayer();
                 PlayerFrame.setVisible(false);
                 PlayerFrame.dispose();
             }
         });
     }
 
-    public void createPlayer(){
+    public void generatePlayer(){
         ButtonGroup group = new ButtonGroup();
         JButton enter;
 
@@ -155,16 +156,16 @@ public class GuiView extends JFrame {
         group.add(blackpanther);
         group.add(batman);
 
-        createFrame.add(spiderman);
-        createFrame.add(blackpanther);
-        createFrame.add(batman);
-        createFrame.add(enter);
-        createFrame.setSize(600,600);
-        createFrame.getContentPane().setBackground(Color.CYAN);
-        createFrame.setLocationRelativeTo(null);
-        createFrame.setLayout(null);
-        createFrame.setVisible(true);
-        createFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        createHeroFrame.add(spiderman);
+        createHeroFrame.add(blackpanther);
+        createHeroFrame.add(batman);
+        createHeroFrame.add(enter);
+        createHeroFrame.setSize(600,600);
+        createHeroFrame.getContentPane().setBackground(Color.CYAN);
+        createHeroFrame.setLocationRelativeTo(null);
+        createHeroFrame.setLayout(null);
+        createHeroFrame.setVisible(true);
+        createHeroFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         enter.addActionListener(new ActionListener(){
             @Override
@@ -176,16 +177,17 @@ public class GuiView extends JFrame {
                 else if (batman.isSelected())
                     type = 1;
                 heroStats();
-                createFrame.setVisible(false);
-                createFrame.dispose();
+                createHeroFrame.setVisible(false);
+                createHeroFrame.dispose();
             }
         });
 
     }
 
-    public void selectPlayer(){
+    public void pickPlayer(){
         JLabel label;
-        JButton enter, exit;
+        JButton enter;
+        JButton exit;
 
         label= new JLabel("Select Existing SuperHero");
         label.setBounds(20, 20, 200, 30);
@@ -199,8 +201,8 @@ public class GuiView extends JFrame {
         heroList.addListSelectionListener(new ListSelectionListener(){
             @Override
             public void valueChanged(ListSelectionEvent arg0) {
-                heroData = heroList.getSelectedValue().toString();
-                hero = StartGame.dbHero(heroData);
+                heroInformation = heroList.getSelectedValue().toString();
+                hero = StartGame.dbHero(heroInformation);
 
             }
         });
@@ -208,28 +210,27 @@ public class GuiView extends JFrame {
         enter.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (heroData == null)
+                if (heroInformation == null)
                     JOptionPane.showMessageDialog(null, "Select Your SuperHero First Player!");
                 else{
                     playGame();
-                    selectFrame.setVisible(false);
-                    selectFrame.dispose();
+                    pickHeroFrame.setVisible(false);
+                    pickHeroFrame.dispose();
                 }
 
             }
         });
 
-        exit.addActionListener(e -> selectFrame.dispose());
+        exit.addActionListener(e -> pickHeroFrame.dispose());
 
-        selectFrame.add(label);
-        selectFrame.add(enter);
-        selectFrame.add(exit);
-        selectFrame.add(heroList);
-        selectFrame.setSize(600, 600);
-        selectFrame.setLocationRelativeTo(null);
-        selectFrame.setLayout(null);
-        selectFrame.setVisible(true);
-        selectFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        pickHeroFrame.add(label);
+        pickHeroFrame.add(enter);
+        pickHeroFrame.add(exit);
+        pickHeroFrame.add(heroList);
+        pickHeroFrame.setSize(600, 600);
+        pickHeroFrame.setLayout(null);
+        pickHeroFrame.setVisible(true);
+        pickHeroFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 
     }
@@ -289,13 +290,13 @@ public class GuiView extends JFrame {
         enter.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                heroData = hero.getHeroStats().getHeroType() + " " +
+                heroInformation = hero.getHeroStats().getHeroType() + " " +
                         player + " " + hero.getHeroStats().getLevel() + " " +
                         hero.getHeroStats().getAttack() + " " + hero.getHeroStats().getAttack() +
                         " " + hero.getHeroStats().getHitPoints() + " " + hero.getHeroStats().getExperience() +
                         " " + artifact.toUpperCase();
 
-                WriteTXT.writeToFile(heroData);
+                WriteTXT.writeToFile(heroInformation);
                 WriteTXT.closeFile();
                 playGame();
                 statsFrame.setVisible(false);
@@ -309,32 +310,23 @@ public class GuiView extends JFrame {
 
         map = new GuiController(hero, gameFrame);
 
-        area = map.MapDisplay();
-
-
-        //Down Button
-        south = new JButton("Move Down");
-        south.setBounds(140,540, 120, 30);
-
-        //Right Button
-        west = new JButton("Move Right");
-        west.setBounds(400,540, 100, 30);
+        txtArea = map.MapDisplay();
 
         //Up Button
         north = new JButton("Move Up");
         north.setBounds(20,540, 100, 30);
 
-        //Left Button
-        east = new JButton("Move Left");
-        east.setBounds(280,540, 100, 30);
-
-        //Move Up
-        north.addActionListener(new ActionListener(){
+         //Move Up
+         north.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
                 map.updateHeroPosition(0, -1);
             }
         });
+
+        //Down Button
+        south = new JButton("Move Down");
+        south.setBounds(140,540, 120, 30);
 
         //Move Down
         south.addActionListener(new ActionListener(){
@@ -344,6 +336,10 @@ public class GuiView extends JFrame {
             }
         });
 
+        //Left Button
+        east = new JButton("Move Left");
+        east.setBounds(280,540, 100, 30);
+
         //Move Left
         east.addActionListener(new ActionListener(){
             @Override
@@ -352,16 +348,22 @@ public class GuiView extends JFrame {
             }
         });
 
-        //Move Right
-        west.addActionListener(new ActionListener(){
+        //Right Button
+        west = new JButton("Move Right");
+        west.setBounds(400,540, 100, 30);
+
+         //Move Right
+         west.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
                 map.updateHeroPosition(1, 0);
             }
         });
 
-        area.setBounds(50,30, 600, 500);
-        gameFrame.add(area);
+        
+
+        txtArea.setBounds(50,30, 600, 500);
+        gameFrame.add(txtArea);
         gameFrame.add(north);
         gameFrame.add(south);
         gameFrame.add(east);
